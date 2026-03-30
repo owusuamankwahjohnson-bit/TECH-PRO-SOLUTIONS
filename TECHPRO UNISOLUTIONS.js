@@ -1,92 +1,78 @@
 /*
- * TECH PRO UNI SOLUTIONS - Corporate Site Engine
- * Version: 5.0
- * Author: owusuamankwahjohnson-bit
+ * TECH PRO UNI SOLUTIONS - Optimization Engine v5.1
+ * Optimized for PageSpeed & Ghana Network Performance
  */
 
 (function() {
     const BRAND = "TECH PRO UNI SOLUTIONS";
-    const PRIMARY_BLUE = "#004aad"; // Professional Tech Blue
-    const ACCENT_CYAN = "#00d2ff";  // Modern Accent
+    const PRIMARY_BLUE = "#004aad"; 
     const YEAR = "2026";
+    const targetRegex = /LiteSpot|Templateify|SURE\s?BET\s?24\/7|Piki\s?Templates|AladdynKing/gi;
 
-    function applyLiveCorrections() {
-        // 1. INJECT PROFESSIONAL STYLING (The "Catching" Colors)
+    // 1. Inject Styles ONCE (Optimized to prevent Layout Shift)
+    function injectStyles() {
+        if (document.getElementById('techpro-styles')) return;
         const style = document.createElement('style');
+        style.id = 'techpro-styles';
         style.innerHTML = `
-            :root {
-                --main-color: ${PRIMARY_BLUE} !important;
-                --button-bg: ${PRIMARY_BLUE} !important;
-                --title-hover-color: ${ACCENT_CYAN} !important;
-                --keycolor: ${PRIMARY_BLUE} !important;
-            }
-            /* Header Professional Branding */
-            .main-logo .blog-title a, .blog-title { 
-                color: ${PRIMARY_BLUE} !important; 
-                font-family: 'Raleway', sans-serif !important;
-                font-weight: 800 !important;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-            .header-header { border-bottom: 3px solid ${PRIMARY_BLUE} !important; }
-            
-            /* Category & Navigation Styling */
-            .entry-category, .btn, .button, #back-top, .ticker-nav a, .ticker .widget-title .title { 
-                background: ${PRIMARY_BLUE} !important; 
-                color: #ffffff !important; 
-                border: none !important;
-            }
-            
-            /* AdSense Quick Approval Clean-up */
-            .error-msg, .queryEmpty { 
-                border: 2px dashed ${PRIMARY_BLUE}; 
-                background: rgba(0, 74, 173, 0.05); 
-                padding: 30px; 
-                text-align: center;
-                border-radius: 12px;
-            }
+            :root { --main-color: ${PRIMARY_BLUE} !important; --button-bg: ${PRIMARY_BLUE} !important; }
+            .blog-title, .blog-title a { color: ${PRIMARY_BLUE} !important; font-family: 'Raleway', sans-serif !important; font-weight: 800 !important; text-transform: uppercase; }
+            .entry-category, .btn, .button, #back-top, .ticker-nav a { background: ${PRIMARY_BLUE} !important; color: #fff !important; }
+            .footer-copyright, .footerbar { min-height: 50px; } /* Prevent footer jump */
         `;
         document.head.appendChild(style);
+    }
 
-        // 2. AUTOMATIC BRANDING SCRUBBER
-        // Replaces all old template names and demo text with your brand
-        const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    // 2. Optimized Text & Image Scrubber
+    function cleanContent(rootNode) {
+        // Scrub Text
+        const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT, null, false);
         let node;
-        const targetRegex = /LiteSpot|Templateify|SURE\s?BET\s?24\/7|Piki\s?Templates|AladdynKing/gi;
-        
-        while (node = walk.nextNode()) {
+        while (node = walker.nextNode()) {
             if (node.nodeValue.match(targetRegex)) {
                 node.nodeValue = node.nodeValue.replace(targetRegex, BRAND);
             }
         }
-        
-        // Correct Browser Tab Title
-        if (document.title.match(targetRegex)) {
-            document.title = document.title.replace(targetRegex, BRAND);
-        }
 
-        // 3. PAGESPEED ENFORCEMENT (Ghana Network Optimization)
-        document.querySelectorAll('img').forEach(img => {
-            img.setAttribute('loading', 'lazy'); // Native Lazy Load
+        // Optimize Images (Only those not already processed)
+        rootNode.querySelectorAll('img:not([data-opt])').forEach(img => {
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('data-opt', 'true');
             let src = img.getAttribute('src');
             if (src && src.includes('blogspot.com') && !src.includes('-rw')) {
-                // Forces Blogger to serve WebP (-rw) which is 50% smaller/faster
                 img.setAttribute('src', src.replace(/\/s[0-9]+(-c)?\//, '/s1600-rw/'));
             }
         });
 
-        // 4. FOOTER & COPYRIGHT FIX
-        const footer = document.querySelector('.footer-copyright, #footer-copyright, .footerbar .container');
-        if (footer) {
-            footer.innerHTML = `<p style="margin:0; padding:10px 0;">Copyright © ${YEAR} <a href="/" style="color:${PRIMARY_BLUE}; font-weight:bold;">${BRAND}</a>. All Rights Reserved.</p>`;
+        // Fixed Footer
+        const footer = document.querySelector('.footer-copyright, #footer-copyright');
+        if (footer && !footer.hasAttribute('data-fixed')) {
+            footer.innerHTML = `Copyright © ${YEAR} ${BRAND}. All Rights Reserved.`;
+            footer.setAttribute('data-fixed', 'true');
         }
     }
 
-    // Execute multiple times to catch dynamic widgets
-    applyLiveCorrections();
-    window.addEventListener('DOMContentLoaded', applyLiveCorrections);
-    window.addEventListener('load', applyLiveCorrections);
-    setInterval(applyLiveCorrections, 3000);
+    // 3. Execution Logic
+    injectStyles();
+    
+    // Run once when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => cleanContent(document.body));
+    } else {
+        cleanContent(document.body);
+    }
 
-    console.log("TECH PRO UNI SOLUTIONS: Optimization Engine Active.");
+    // 4. MutationObserver: Replaces the slow setInterval
+    // This watches for new widgets/ads loading and cleans them instantly
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) cleanContent(node);
+            });
+        });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    console.log("TECH PRO UNI SOLUTIONS: Performance Engine v5.1 Active");
 })();
