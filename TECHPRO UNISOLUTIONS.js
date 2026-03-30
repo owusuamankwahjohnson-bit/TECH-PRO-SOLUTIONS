@@ -1,91 +1,92 @@
 /*
- * TECH PRO UNI SOLUTIONS - Site Engine v4.0
- * Location: Ghana | Author: owusuamankwahjohnson-bit
- * Function: Professional Branding, PageSpeed, and AdSense Preparation
+ * TECH PRO UNI SOLUTIONS - Corporate Site Engine
+ * Version: 5.0
+ * Author: owusuamankwahjohnson-bit
  */
 
 (function() {
-    const BRAND_NAME = "TECH PRO UNI SOLUTIONS";
-    const PRIMARY_COLOR = "#004aad"; // Deep Professional Tech Blue
-    const ACCENT_COLOR = "#00d2ff";  // Modern Cyan Accent
+    const BRAND = "TECH PRO UNI SOLUTIONS";
+    const PRIMARY_BLUE = "#004aad"; // Professional Tech Blue
+    const ACCENT_CYAN = "#00d2ff";  // Modern Accent
     const YEAR = "2026";
 
-    function applyProfessionalStyling() {
-        // 1. INJECT PROFESSIONAL COLORS (Overriding XML defaults)
+    function applyLiveCorrections() {
+        // 1. INJECT PROFESSIONAL STYLING (The "Catching" Colors)
         const style = document.createElement('style');
         style.innerHTML = `
             :root {
-                --main-color: ${PRIMARY_COLOR} !important;
-                --button-bg: ${PRIMARY_COLOR} !important;
-                --title-hover-color: ${ACCENT_COLOR} !important;
+                --main-color: ${PRIMARY_BLUE} !important;
+                --button-bg: ${PRIMARY_BLUE} !important;
+                --title-hover-color: ${ACCENT_CYAN} !important;
+                --keycolor: ${PRIMARY_BLUE} !important;
             }
-            /* Header and Brand Bar */
-            .header-header { border-bottom: 3px solid ${PRIMARY_COLOR} !important; }
-            .main-logo .blog-title, .main-logo .blog-title a { color: ${PRIMARY_COLOR} !important; font-weight: 800 !important; text-transform: uppercase; }
+            /* Header Professional Branding */
+            .main-logo .blog-title a, .blog-title { 
+                color: ${PRIMARY_BLUE} !important; 
+                font-family: 'Raleway', sans-serif !important;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .header-header { border-bottom: 3px solid ${PRIMARY_BLUE} !important; }
             
-            /* Buttons and Categories */
-            .entry-category, .btn, .button, #back-top, .ticker .widget-title .title { 
-                background-color: ${PRIMARY_COLOR} !important; 
+            /* Category & Navigation Styling */
+            .entry-category, .btn, .button, #back-top, .ticker-nav a, .ticker .widget-title .title { 
+                background: ${PRIMARY_BLUE} !important; 
                 color: #ffffff !important; 
-                border-radius: 4px !important;
-                transition: 0.3s ease;
+                border: none !important;
             }
-            .btn:hover, .button:hover { background-color: ${ACCENT_COLOR} !important; }
             
-            /* Links and Post Style */
-            a { color: ${PRIMARY_COLOR}; }
-            .entry-title a:hover { color: ${ACCENT_COLOR} !important; }
-            
-            /* AdSense Safe UI */
-            .error-msg, .queryEmpty { border: 1px solid #eee; background: #f9f9f9; padding: 20px; border-radius: 8px; }
+            /* AdSense Quick Approval Clean-up */
+            .error-msg, .queryEmpty { 
+                border: 2px dashed ${PRIMARY_BLUE}; 
+                background: rgba(0, 74, 173, 0.05); 
+                padding: 30px; 
+                text-align: center;
+                border-radius: 12px;
+            }
         `;
         document.head.appendChild(style);
 
-        // 2. SCRUB ALL OLD NAMES (LiteSpot, Templateify, Sure Bet)
-        function scrubText() {
-            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-            let node;
-            const targetNames = /LiteSpot|Templateify|SURE\s?BET\s?24\/7|Piki\s?Templates|SureBet/gi;
-            
-            while (node = walker.nextNode()) {
-                if (node.nodeValue.match(targetNames)) {
-                    node.nodeValue = node.nodeValue.replace(targetNames, BRAND_NAME);
-                }
-            }
-            
-            // Fix Browser Tab Title
-            if (document.title.match(targetNames)) {
-                document.title = document.title.replace(targetNames, BRAND_NAME);
+        // 2. AUTOMATIC BRANDING SCRUBBER
+        // Replaces all old template names and demo text with your brand
+        const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        const targetRegex = /LiteSpot|Templateify|SURE\s?BET\s?24\/7|Piki\s?Templates|AladdynKing/gi;
+        
+        while (node = walk.nextNode()) {
+            if (node.nodeValue.match(targetRegex)) {
+                node.nodeValue = node.nodeValue.replace(targetRegex, BRAND);
             }
         }
+        
+        // Correct Browser Tab Title
+        if (document.title.match(targetRegex)) {
+            document.title = document.title.replace(targetRegex, BRAND);
+        }
 
-        // 3. PAGESPEED: CONVERT IMAGES TO WEBP & ENFORCE LAZY LOADING
+        // 3. PAGESPEED ENFORCEMENT (Ghana Network Optimization)
         document.querySelectorAll('img').forEach(img => {
-            img.setAttribute('loading', 'lazy');
+            img.setAttribute('loading', 'lazy'); // Native Lazy Load
             let src = img.getAttribute('src');
-            if (src && src.includes('blogspot.com')) {
-                // Blogger -rw parameter forces WebP images for faster loading in Ghana
-                if (!src.includes('-rw')) {
-                    img.setAttribute('src', src.replace(/\/s[0-9]+(-c)?\//, '/s1600-rw/'));
-                }
+            if (src && src.includes('blogspot.com') && !src.includes('-rw')) {
+                // Forces Blogger to serve WebP (-rw) which is 50% smaller/faster
+                img.setAttribute('src', src.replace(/\/s[0-9]+(-c)?\//, '/s1600-rw/'));
             }
         });
 
-        // 4. STANDARDIZE FOOTER COPYRIGHT
-        const footerText = document.querySelector('.footer-copyright, #footer-copyright, .copyright-text');
-        if (footerText) {
-            footerText.innerHTML = `Copyright © ${YEAR} <a href="/">${BRAND_NAME}</a>. All Rights Reserved.`;
+        // 4. FOOTER & COPYRIGHT FIX
+        const footer = document.querySelector('.footer-copyright, #footer-copyright, .footerbar .container');
+        if (footer) {
+            footer.innerHTML = `<p style="margin:0; padding:10px 0;">Copyright © ${YEAR} <a href="/" style="color:${PRIMARY_BLUE}; font-weight:bold;">${BRAND}</a>. All Rights Reserved.</p>`;
         }
-
-        scrubText();
     }
 
-    // Run immediately
-    applyProfessionalStyling();
+    // Execute multiple times to catch dynamic widgets
+    applyLiveCorrections();
+    window.addEventListener('DOMContentLoaded', applyLiveCorrections);
+    window.addEventListener('load', applyLiveCorrections);
+    setInterval(applyLiveCorrections, 3000);
 
-    // Run again after 3 seconds to catch widgets that load late
-    setTimeout(applyProfessionalStyling, 3000);
-    
-    // Log for verification
-    console.log(BRAND_NAME + " Optimization Loaded Successfully.");
+    console.log("TECH PRO UNI SOLUTIONS: Optimization Engine Active.");
 })();
